@@ -106,7 +106,7 @@ void LinkedList<T>::reverse() {
         temp = current->prev;
         current->prev = current->next;
         current->next = temp;
-        current = current->prev; // Переходим к следующему узлу (который теперь в prev)
+        current = current->prev;  // Переходим к следующему узлу (который теперь в prev)
     }
     
     // Меняем местами head и tail
