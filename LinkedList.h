@@ -2,38 +2,41 @@
 
 #include <iostream>
 
+template <typename T>
 struct Node {
-    Node(int value) : value(value), next(nullptr) {}
-    Node(int value, Node* next) : value(value), next(next) {}
-    int value;
+    T value;
     Node* next;
+    Node* prev;
+    
+    Node() : next(nullptr), prev(nullptr) {}
+    Node(const T& val) : value(val), next(nullptr), prev(nullptr) {}
 };
 
+template <typename T>
 class LinkedList {
 public:
-    LinkedList() { head = nullptr; tail = nullptr; }
-    LinkedList(const LinkedList& otherlist);
-    ~LinkedList() { clear(); }
+    LinkedList();
+    ~LinkedList();
     
-    LinkedList& operator=(const LinkedList& otherlist);
-
-    Node* get_head() { return head; }
-    void set_head(Node* head) { this->head = head; }
-
-    Node* get_tail() { return tail; }
-    void set_tail(Node* tail) { this->tail = tail; }
-
-    void append(int value);
-    void clear();
-    void print();
-    void reverse();
-    void delete_value(int remove_value);
-    void edit_by_index(int new_value, int target_index);
+    Node<T>* get_head() const;
+    void set_head(Node<T>* head);
+    
+    Node<T>* get_tail() const;
+    void set_tail(Node<T>* tail);
+    
+    int get_size() const;
+    void set_size(int size);
+    
+    void append(const T& value);
     void delete_last();
-
+    void clear();
+    void reverse();
+    void print() const;
+    
 private:
-    Node* head = nullptr;
-    Node* tail = nullptr;
+    Node<T>* head;
+    Node<T>* tail;
+    int size;
 };
 
 

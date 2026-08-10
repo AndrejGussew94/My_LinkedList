@@ -1,151 +1,142 @@
 #include "LinkedList.h"
 
-LinkedList::LinkedList(const LinkedList& otherlist) {
-    head = nullptr;
-    tail = nullptr;
-    
-    Node* current_other = otherlist.head;
-    while(current_other != nullptr) {
-        append(current_other->value);
-        current_other = current_other->next;
-    }
+template <typename T>
+LinkedList<T>::LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+
+// Деструктор
+template <typename T>
+LinkedList<T>::~LinkedList() {
+    clear();
 }
 
-LinkedList& LinkedList::operator=(const LinkedList& otherlist) {
-    if (this == &otherlist) {
-        return *this;
-    }
-    
-    clear();    
-
-    Node* current_other = otherlist.head;
-    while(current_other != nullptr) {
-        append(current_other->value);
-        current_other = current_other->next;
-    }
-    
-    return *this;
+// Геттеры и сеттеры
+template <typename T>
+Node<T>* LinkedList<T>::get_head() const {
+    return head;
 }
 
-void LinkedList::append(int value) { 
-    Node* new_node = new Node(value);
-    if (head == nullptr) {
+template <typename T>
+void LinkedList<T>::set_head(Node<T>* head) {
+    this->head = head;
+}
+
+template <typename T>
+Node<T>* LinkedList<T>::get_tail() const {
+    return tail;
+}
+
+template <typename T>
+void LinkedList<T>::set_tail(Node<T>* tail) {
+    this->tail = tail;
+}
+
+template <typename T>
+int LinkedList<T>::get_size() const {
+    return size;
+}
+
+template <typename T>
+void LinkedList<T>::set_size(int size) {
+    this->size = size;
+}
+
+// Добавление элемента в конец списка
+template <typename T>
+void LinkedList<T>::append(const T& value) {
+    Node<T>* new_node = new Node<T>(value);
+    
+    if (size == 0) {
         head = new_node;
-        tail = head;
+        tail = new_node;
+    } else {
+        tail->next = new_node;
+        new_node->prev = tail;
+        tail = new_node;
+    }
+    size++;
+}
+
+// Удаление последнего элемента
+template <typename T>
+void LinkedList<T>::delete_last() {
+    if (size == 0) {
+        std::cout << "List is empty!" << std::endl;
         return;
     }
     
-    tail->next = new_node;
-    tail = new_node;
-}
-
-void LinkedList::clear() {
-    
-    while(head != nullptr) {
-        Node* node_to_delete = head;
-        head = head->next;
-        delete node_to_delete;
+    if (size == 1) {
+        delete head;
+        head = nullptr;
+        tail = nullptr;
+    } else {
+        Node<T>* temp = tail;
+        tail = tail->prev;
+        tail->next = nullptr;
+        delete temp;
     }
-    tail = nullptr;
+    size--;
 }
 
-void LinkedList::print() {
-    if (head == nullptr) return;
-    Node* temp_node = head;
-    while(temp_node != nullptr) {
-        std::cout << temp_node->value;
-        if (temp_node->next != nullptr) std::cout << ", ";
-        temp_node = temp_node->next;
+// Очистка всего списка
+template <typename T>
+void LinkedList<T>::clear() {
+    Node<T>* current = head;
+    while (current != nullptr) {
+        Node<T>* next = current->next;
+        delete current;
+        current = next;
+    }
+    head = nullptr;
+    tail = nullptr;
+    size = 0;
+}
+
+// Реверс списка
+template <typename T>
+void LinkedList<T>::reverse() {
+    if (size <= 1) {
+        return;
+    }
+    
+    Node<T>* current = head;
+    Node<T>* temp = nullptr;
+    
+    // Меняем местами next и prev для каждого узла
+    while (current != nullptr) {
+        temp = current->prev;
+        current->prev = current->next;
+        current->next = temp;
+        current = current->prev; // Переходим к следующему узлу (который теперь в prev)
+    }
+    
+    // Меняем местами head и tail
+    temp = head;
+    head = tail;
+    tail = temp;
+}
+
+// Печать списка
+template <typename T>
+void LinkedList<T>::print() const {
+    if (size == 0) {
+        std::cout << "List is empty" << std::endl;
+        return;
+    }
+    
+    Node<T>* current = head;
+    std::cout << "List (size = " << size << "): ";
+    while (current != nullptr) {
+        std::cout << current->value;
+        if (current->next != nullptr) {
+            std::cout << " <-> ";
+        }
+        current = current->next;
     }
     std::cout << std::endl;
 }
 
-void LinkedList::reverse() {
-    if (head == nullptr) return;
-
-    tail = head;
-    Node* current_node = head;
-    Node* previous_node = nullptr;
-   
-    while (current_node != nullptr) {
-        Node* next_node = current_node->next;
-        current_node->next = previous_node;
-        previous_node = current_node;
-        current_node = next_node;
-    }
-    head = previous_node;
-    
-}
-
-void LinkedList::delete_value(int remove_value) {
-    while (head != nullptr && head->value == remove_value) {
-        Node* node_to_delete = head;
-        head = head->next;
-        delete node_to_delete;
-    }
-    
-    if (head == nullptr) {
-        tail = nullptr; 
-        return;
-    }
-
-    Node* current = head;
-    while (current->next != nullptr) {
-        if (current->next->value == remove_value) {
-            Node* node_to_delete = current->next;
-            current->next = current->next->next;
-            if(current->next == nullptr) tail = current;
-            delete node_to_delete;
-        } else {
-            current = current->next;
-        }
-    }
-}
-
-
-void LinkedList::edit_by_index(int new_value, int target_index) {
-    if (head == nullptr) {
-        std::cout << "This list is empty" << std::endl;
-        return;
-    }
-    
-    int index = 0;
-    Node* temp = head;
-    
-    while(temp != nullptr && index < target_index) {
-        temp = temp->next;
-        index++;
-    }
-    
-    if (temp == nullptr) {
-        std::cout << "This index does not exist" << std::endl;
-        return;
-    }
-    
-    temp->value = new_value;
-}
-
-void LinkedList::delete_last() {
-   
-    if (head == nullptr) {
-        return;
-    }
-    
-    if (head == tail) {
-        delete head;
-        head = nullptr;
-        tail = nullptr;
-        return;
-    }
-
-    Node* current = head;
-    while (current->next != tail) {
-        current = current->next;
-    }
-
-    delete tail;
-    tail = current;
-    tail->next = nullptr;
-
-}
-
+// Явное создание экземпляров шаблона для часто используемых типов
+// (опционально, но может помочь с компиляцией)
+template class LinkedList<int>;
+template class LinkedList<double>;
+template class LinkedList<std::string>;
