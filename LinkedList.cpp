@@ -1,15 +1,37 @@
 #include "LinkedList.h"
 
+// TODO: repair copy constructor and update library in repository
+
 template <typename T>
 LinkedList<T>::LinkedList() : head(nullptr), tail(nullptr), size(0) {}
 
-// Деструктор
+template <typename T>
+LinkedList<T>::LinkedList(const LinkedList& other) : head(nullptr), tail(nullptr), size(0) {
+    Node<T>* current = other.head;
+    while (current != nullptr) {
+        append(current->value);
+        current = current->next;
+    }
+}
+
 template <typename T>
 LinkedList<T>::~LinkedList() {
     clear();
 }
 
-// Геттеры и сеттеры
+template <typename T>
+LinkedList<T>& LinkedList<T>::operator=(const LinkedList& other) {
+    if (this != &other) {
+        clear();
+        Node<T>* current = other.head;
+        while (current != nullptr) {
+            append(current->value);
+            current = current->next;
+        }
+    }
+    return *this;
+}
+
 template <typename T>
 Node<T>* LinkedList<T>::get_head() const {
     return head;
@@ -40,7 +62,6 @@ void LinkedList<T>::set_size(int size) {
     this->size = size;
 }
 
-// Добавление элемента в конец списка
 template <typename T>
 void LinkedList<T>::append(const T& value) {
     Node<T>* new_node = new Node<T>(value);
@@ -56,7 +77,6 @@ void LinkedList<T>::append(const T& value) {
     size++;
 }
 
-// Удаление последнего элемента
 template <typename T>
 void LinkedList<T>::delete_last() {
     if (size == 0) {
@@ -77,7 +97,6 @@ void LinkedList<T>::delete_last() {
     size--;
 }
 
-// Очистка всего списка
 template <typename T>
 void LinkedList<T>::clear() {
     Node<T>* current = head;
@@ -91,7 +110,6 @@ void LinkedList<T>::clear() {
     size = 0;
 }
 
-// Реверс списка
 template <typename T>
 void LinkedList<T>::reverse() {
     if (size <= 1) {
@@ -101,21 +119,20 @@ void LinkedList<T>::reverse() {
     Node<T>* current = head;
     Node<T>* temp = nullptr;
     
-    // Меняем местами next и prev для каждого узла
+    
     while (current != nullptr) {
         temp = current->prev;
         current->prev = current->next;
         current->next = temp;
-        current = current->prev;  // Переходим к следующему узлу (который теперь в prev)
+        current = current->prev;  
     }
     
-    // Меняем местами head и tail
     temp = head;
     head = tail;
     tail = temp;
 }
 
-// Печать списка
+
 template <typename T>
 void LinkedList<T>::print() const {
     if (size == 0) {
@@ -135,8 +152,6 @@ void LinkedList<T>::print() const {
     std::cout << std::endl;
 }
 
-// Явное создание экземпляров шаблона для часто используемых типов
-// (опционально, но может помочь с компиляцией)
 template class LinkedList<int>;
 template class LinkedList<double>;
 template class LinkedList<std::string>;

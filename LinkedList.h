@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <iostream>
+
 template <typename T>
 struct Node {
     T value;
@@ -16,7 +18,10 @@ template <typename T>
 class LinkedList {
 public:
     LinkedList();
+    LinkedList(const LinkedList& other);  // Копирующий конструктор
     ~LinkedList();
+    
+    LinkedList& operator=(const LinkedList& other);  // Оператор присваивания
     
     Node<T>* get_head() const;
     void set_head(Node<T>* head);
