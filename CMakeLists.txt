@@ -7,5 +7,5 @@ add_library(linked_list STATIC LinkedList.cpp)
 
 target_include_directories(linked_list PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_executable(tests test.cpp)
-target_link_libraries(tests linked_list)
+add_executable(tests_linked_list test.cpp)
+target_link_libraries(tests_linked_list linked_list)
