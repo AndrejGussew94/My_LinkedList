@@ -2,8 +2,6 @@
 
 #include <iostream>
 
-#include <iostream>
-
 template <typename T>
 struct Node {
     T value;
@@ -18,11 +16,12 @@ template <typename T>
 class LinkedList {
 public:
     LinkedList();
-    LinkedList(const LinkedList& other);  // Копирующий конструктор
+    LinkedList(const LinkedList& other);
     ~LinkedList();
     
-    LinkedList& operator=(const LinkedList& other);  // Оператор присваивания
+    LinkedList& operator=(const LinkedList& other);
     
+    // Геттеры и сеттеры
     Node<T>* get_head() const;
     void set_head(Node<T>* head);
     
@@ -32,11 +31,16 @@ public:
     int get_size() const;
     void set_size(int size);
     
+    // Основные операции
     void append(const T& value);
     void delete_last();
     void clear();
     void reverse();
     void print() const;
+    
+    // Дополнительные операции
+    void delete_value(const T& value);      // Удаление всех элементов с заданным значением
+    void edit_by_index(const T& new_value, int index);  // Изменение элемента по индексу
     
 private:
     Node<T>* head;
